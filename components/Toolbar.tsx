@@ -1,7 +1,7 @@
 
 import React from 'react';
-import { MousePointer2, Ruler, Maximize, Trash2, Download, Layers, Palette } from 'lucide-react';
-import { Tool, Unit } from '../types';
+import { Ruler, Maximize, Trash2, Download, Layers, Move, Type, MousePointer2 } from 'lucide-react';
+import { Tool, Unit, LineStyle } from '../types';
 
 interface ToolbarProps {
   activeTool: Tool;
@@ -12,6 +12,10 @@ interface ToolbarProps {
   onExport: () => void;
   activeColor: string;
   onColorChange: (color: string) => void;
+  lineStyle: LineStyle;
+  onLineStyleChange: (style: LineStyle) => void;
+  thickness: number;
+  onThicknessChange: (thickness: number) => void;
 }
 
 const COLORS = [
@@ -30,7 +34,11 @@ const Toolbar: React.FC<ToolbarProps> = ({
   onClear,
   onExport,
   activeColor,
-  onColorChange
+  onColorChange,
+  lineStyle,
+  onLineStyleChange,
+  thickness,
+  onThicknessChange
 }) => {
   return (
     <div className="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-white/95 backdrop-blur shadow-2xl px-6 py-3 rounded-2xl border border-gray-200 z-50">
@@ -47,6 +55,16 @@ const Toolbar: React.FC<ToolbarProps> = ({
           <span className="text-[10px] font-bold">画线</span>
         </button>
         <button
+          onClick={() => onToolChange(Tool.MOVE)}
+          className={`p-3 rounded-xl transition-all flex flex-col items-center gap-1 ${
+            activeTool === Tool.MOVE ? 'bg-indigo-600 text-white shadow-lg' : 'hover:bg-gray-100 text-gray-600'
+          }`}
+          title="移动/调整"
+        >
+          <Move size={20} />
+          <span className="text-[10px] font-bold">拖拽</span>
+        </button>
+        <button
           onClick={() => onToolChange(Tool.CALIBRATE)}
           className={`p-3 rounded-xl transition-all flex flex-col items-center gap-1 ${
             activeTool === Tool.CALIBRATE ? 'bg-red-600 text-white shadow-lg' : 'hover:bg-gray-100 text-gray-600'
@@ -58,20 +76,45 @@ const Toolbar: React.FC<ToolbarProps> = ({
         </button>
       </div>
 
-      {/* 颜色选择 */}
-      <div className="flex items-center gap-2 px-4 border-r border-gray-200">
-        <div className="flex gap-1.5">
+      {/* 样式选择 */}
+      <div className="flex items-center gap-4 px-4 border-r border-gray-200">
+        {/* 颜色 */}
+        <div className="flex gap-1">
           {COLORS.map((c) => (
             <button
               key={c.value}
               onClick={() => onColorChange(c.value)}
-              className={`w-6 h-6 rounded-full border-2 transition-transform hover:scale-110 ${
+              className={`w-5 h-5 rounded-full border-2 transition-transform hover:scale-110 ${
                 activeColor === c.value ? 'border-gray-400 scale-110' : 'border-transparent'
               }`}
               style={{ backgroundColor: c.value }}
-              title={c.name}
             />
           ))}
+        </div>
+        
+        {/* 线型 */}
+        <button
+          onClick={() => onLineStyleChange(lineStyle === 'solid' ? 'dashed' : 'solid')}
+          className="flex flex-col items-center gap-1 p-2 hover:bg-gray-100 rounded-xl transition-colors text-gray-600"
+          title="切换虚实线"
+        >
+          <div className="w-8 flex flex-col gap-1 items-center">
+             <div className={`w-full h-0.5 ${lineStyle === 'dashed' ? 'border-t-2 border-dashed' : 'bg-current'}`} style={{color: activeColor}}></div>
+          </div>
+          <span className="text-[10px] font-bold">{lineStyle === 'solid' ? '实线' : '虚线'}</span>
+        </button>
+
+        {/* 粗细 */}
+        <div className="flex flex-col items-center gap-1 px-2">
+           <input 
+             type="range" 
+             min="1" 
+             max="8" 
+             value={thickness} 
+             onChange={(e) => onThicknessChange(parseInt(e.target.value))}
+             className="w-16 accent-indigo-600"
+           />
+           <span className="text-[10px] font-bold text-gray-500">粗细: {thickness}</span>
         </div>
       </div>
 

@@ -4,6 +4,8 @@ export type Point = {
   y: number;
 };
 
+export type LineStyle = 'solid' | 'dashed';
+
 export type MeasurementLine = {
   id: string;
   start: Point;
@@ -11,6 +13,8 @@ export type MeasurementLine = {
   lengthCm: number;
   color: string;
   label?: string;
+  style: LineStyle;
+  thickness: number;
 };
 
 export type Calibration = {
@@ -21,7 +25,8 @@ export type Calibration = {
 export enum Tool {
   SELECT = 'select',
   LINE = 'line',
-  CALIBRATE = 'calibrate'
+  CALIBRATE = 'calibrate',
+  MOVE = 'move'
 }
 
 export enum Unit {
