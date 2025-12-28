@@ -1,0 +1,7 @@
+{
+  "name": "DimensionMaster AI",
+  "description": "A professional-grade tool for marking product dimensions on images with automatic unit conversion (CM/IN) and Gemini-powered image analysis.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
